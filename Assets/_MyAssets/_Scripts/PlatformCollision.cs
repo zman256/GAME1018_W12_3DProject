@@ -2,9 +2,11 @@ using UnityEngine;
 
 public class PlatformCollision : MonoBehaviour
 {
-    [SerializeField] private Transform platformTransform; 
-    // Reference changed to your specific class name: PlatformMover
-    [SerializeField] private PlatformMover movementScript; 
+    [SerializeField]
+    private Transform platformTransform;
+
+    [SerializeField]
+    private PlatformMover movementScript; 
 
     private void OnTriggerEnter(Collider other)
     {
@@ -12,7 +14,7 @@ public class PlatformCollision : MonoBehaviour
         {
             other.transform.SetParent(platformTransform);
             
-            // Notify your PlatformMover script
+            // Notify PlatformMover script
             if (movementScript != null)
             {
                 movementScript.SetPlayerStatus(true);
@@ -26,7 +28,7 @@ public class PlatformCollision : MonoBehaviour
         {
             other.transform.SetParent(null);
             
-            // Notify your PlatformMover script
+            // Notify PlatformMover script
             if (movementScript != null)
             {
                 movementScript.SetPlayerStatus(false);

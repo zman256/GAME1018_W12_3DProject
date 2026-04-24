@@ -7,7 +7,7 @@ public class PlatformMover : MonoBehaviour
     public Transform targetPoint;
     public Transform playerTransform; 
     public float speed = 3f;
-    public float boardDelay = 1.0f;
+    public float boardToMoveDelay = 1.0f;
 
     private Vector3 startPosition;
     private Vector3 targetPosition;
@@ -32,7 +32,7 @@ public class PlatformMover : MonoBehaviour
         // 1. Determine where we want to go
         if (playerOnPlatform)
         {
-            // If the player just got on, pick the "other" side
+            // If the player just got on the platform, pick the opposite destination to where the platform currently is at
             if (!tripActive)
             {
                 currentDestination = hasReachedTarget ? startPosition : targetPosition;
@@ -41,7 +41,7 @@ public class PlatformMover : MonoBehaviour
         }
         else
         {
-            // If player is OFF, just go to the station closest to the player
+            // If player is off the platform, go to the station that's closest to the player
             tripActive = false;
             float distToStart = Vector3.Distance(playerTransform.position, startPosition);
             float distToTarget = Vector3.Distance(playerTransform.position, targetPosition);
@@ -49,19 +49,19 @@ public class PlatformMover : MonoBehaviour
         }
 
         // 2. Move toward that destination
-        float distToDest = Vector3.Distance(transform.position, currentDestination);
+        float distanceToDestination = Vector3.Distance(transform.position, currentDestination);
         
-        if (distToDest > 0.1f)
+        if (distanceToDestination > 0.1f)
         {
             transform.position = Vector3.MoveTowards(transform.position, currentDestination, speed * Time.fixedDeltaTime);
         }
         else
         {
-            // 3. We have ARRIVED at the destination
+            // 3. Platform has arrived at the destination
             if (currentDestination == targetPosition) hasReachedTarget = true;
             else if (currentDestination == startPosition) hasReachedTarget = false;
             
-            // If player is still on, stay parked here until they leave (tripActive remains true)
+            // If player is still on the platform, stay parked here until they leave (tripActive remains true)
         }
     }
 
@@ -71,12 +71,12 @@ public class PlatformMover : MonoBehaviour
         
         if (isOn) 
         {
-            // Force a wait every time the player boards
+            // Force a wait every time the player hops on the platform
             StartCoroutine(WaitBeforeMoving());
         }
         else
         {
-            // Player left, allow a new trip to be decided next time they board
+            // Player left, allow a new trip to be decided next time they board the platform
             tripActive = false;
         }
     }
@@ -84,7 +84,7 @@ public class PlatformMover : MonoBehaviour
     private IEnumerator WaitBeforeMoving()
     {
         isWaiting = true;
-        yield return new WaitForSeconds(boardDelay);
+        yield return new WaitForSeconds(boardToMoveDelay);
         isWaiting = false;
     }
 }
